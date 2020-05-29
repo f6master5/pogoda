@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class CityDetailViewController: UIViewController {
 
@@ -16,14 +18,30 @@ class CityDetailViewController: UIViewController {
     
     var cityName = ""
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         cityNameLabel.text = cityName
-
-       
+         getTempFromCity(name: cityName)
+        
     }
     
+    
+    
+    func getTempFromCity(name: String) {
+        let url = "http://api.weatherapi.com/v1/current.json?key=2d1d30ac41eb456bb37174240202705&q=\(cityName)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        AF.request(url as! URLConvertible, method: .get).validate().responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                self.cityTempLabel.text = String(json["current"]["temp_c"].doubleValue)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+    }
 
     /*
     // MARK: - Navigation

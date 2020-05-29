@@ -10,7 +10,7 @@ import UIKit
 
 class TableViewController: UITableViewController {
     
-    var cityArray = ["Moskow", "Novosibirsk", "Orel"]
+    var cityArray = ["Voronezh", "Novosibirsk", "Orel"]
     var cityselect = ""
 
     override func viewDidLoad() {
@@ -21,6 +21,12 @@ class TableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        if let defaultsCity = UserDefaults.standard.array(forKey: "cityArray") {
+            cityArray = defaultsCity as! [String]
+            }
+        
     }
 
     // MARK: - Table view data source
@@ -73,6 +79,8 @@ class TableViewController: UITableViewController {
             // Delete the row from the data source
             cityArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            UserDefaults.standard.set(self.cityArray, forKey: "cityArray")
+            
         }
     }
     
@@ -114,6 +122,7 @@ class TableViewController: UITableViewController {
             if !city!.isEmpty {
                 self.cityArray.append(city!)
                 self.tableView.reloadData()
+                UserDefaults.standard.set(self.cityArray, forKey: "cityArray")
             }
         }
         let cancel = UIAlertAction(title: "cancel", style: .cancel, handler: nil)
